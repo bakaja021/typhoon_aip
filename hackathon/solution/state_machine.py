@@ -1,11 +1,20 @@
-class StateMachine:
+from transitions import Machine
+
+
+class StateMachine(object):
+    states = ['mode1', 'mode2']
+    transitions = [
+        {'trigger': 'off', 'source': 'mode1', 'dest': 'mode2'},
+        {'trigger': 'on', 'source': 'mode2', 'dest': 'mode1'}
+    ]
+
     def __init__(self):
-        self.msg = "noName"
+        self.machine = Machine(self, states=StateMachine.states, transitions=StateMachine.transitions, initial='mode1')
 
-    def reciever(self, msg):
-        # prelazi iz stanja u stanje
 
-        # vrati neke parametre na osnovu stanja kojima se kontrolise mreza
+class Handler(object):
+    state_machine = StateMachine()
 
-    def get_msg(self):
-        return self.msg
+    def process(self, msg):
+        return self.state_machine.state
+

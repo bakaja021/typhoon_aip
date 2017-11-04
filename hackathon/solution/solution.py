@@ -4,9 +4,9 @@ from hackathon.utils.control import Control
 from hackathon.utils.utils import ResultsMessage, DataMessage, PVMode, \
     TYPHOON_DIR, config_outs
 from hackathon.framework.http_server import prepare_dot_dir
-from .state_machine import StateMachine
+from .state_machine import Handler
 
-obj = StateMachine()
+handler = Handler()
 
 
 def worker(msg: DataMessage) -> ResultsMessage:
@@ -21,7 +21,7 @@ def worker(msg: DataMessage) -> ResultsMessage:
                          power_reference=0.0,
                          pv_mode=PVMode.ON)
 
-    print(obj.get_msg())
+    print(handler.process(msg))
     return res
 
 
