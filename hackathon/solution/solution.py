@@ -4,6 +4,9 @@ from hackathon.utils.control import Control
 from hackathon.utils.utils import ResultsMessage, DataMessage, PVMode, \
     TYPHOON_DIR, config_outs
 from hackathon.framework.http_server import prepare_dot_dir
+from .state_machine import StateMachine
+
+obj = StateMachine()
 
 
 def worker(msg: DataMessage) -> ResultsMessage:
@@ -11,12 +14,15 @@ def worker(msg: DataMessage) -> ResultsMessage:
     # Details about DataMessage and ResultsMessage objects can be found in /utils/utils.py
 
     # Dummy result is returned in every cycle here
-    return ResultsMessage(data_msg=msg,
-                          load_one=True,
-                          load_two=True,
-                          load_three=True,
-                          power_reference=0.0,
-                          pv_mode=PVMode.ON)
+    res = ResultsMessage(data_msg=msg,
+                         load_one=True,
+                         load_two=True,
+                         load_three=True,
+                         power_reference=0.0,
+                         pv_mode=PVMode.ON)
+
+    print(obj.get_msg())
+    return res
 
 
 def run(args) -> None:
