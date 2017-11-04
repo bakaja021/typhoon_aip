@@ -14,14 +14,7 @@ def worker(msg: DataMessage) -> ResultsMessage:
     # Details about DataMessage and ResultsMessage objects can be found in /utils/utils.py
 
     # Dummy result is returned in every cycle here
-    res = ResultsMessage(data_msg=msg,
-                         load_one=True,
-                         load_two=True,
-                         load_three=True,
-                         power_reference=0.0,
-                         pv_mode=PVMode.ON)
-
-    print(handler.process(msg))
+    res = handler.process(msg)
     return res
 
 

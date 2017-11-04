@@ -1,4 +1,5 @@
 from transitions import Machine
+from hackathon.utils.utils import ResultsMessage, PVMode
 
 
 class StateMachine(object):
@@ -16,5 +17,22 @@ class Handler(object):
     state_machine = StateMachine()
 
     def process(self, msg):
-        return self.state_machine.state
+        if not msg.grid_status and self.state_machine.state == 'mode1':
+            self.state_machine.off()
+        elif msg.grid_status and self.state_machine.state == 'mode2':
+            self.state_machine.on()
 
+        if self.state_machine.state == 'mode1':
+            pv_mode = PVMode.OFF
+        elif self.state_machine.state == 'mode2':
+            pv_mode = PVMode.ON
+
+        res = ResultsMessage(data_msg=msg,
+                             load_one=True,
+                             load_two=True,
+                             load_three=True,
+                             power_reference=0.0,
+                             pv_mode=pv_mode)
+
+        print('BamBam: {}'.format(res))
+        return res
