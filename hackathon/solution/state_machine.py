@@ -173,8 +173,8 @@ class Handler(object):
                 load_two = True
                 load_three = True
                 if msg.buying_price == float(8):
-                    if msg.solar_production > float(0.5):
-                        pow_ref = -3.0
+                    if msg.solar_production > float(0):
+                        pow_ref = - msg.solar_production
                     else:
                         pow_ref = 0.0
                 else:
@@ -184,8 +184,8 @@ class Handler(object):
                 load_two = True
                 load_three = False
                 if msg.buying_price == float(8):
-                    if msg.solar_production > float(0.5):
-                        pow_ref = -3.0
+                    if msg.solar_production > float(0):
+                        pow_ref = - msg.solar_production
                     else:
                         pow_ref = 0.0
                 else:
@@ -195,8 +195,8 @@ class Handler(object):
                 load_two = False
                 load_three = False
                 if msg.buying_price == float(8):
-                    if msg.solar_production > float(0.5):
-                        pow_ref = -3.0
+                    if msg.solar_production > float(0):
+                        pow_ref = - msg.solar_production
                     else:
                         pow_ref = 0.0
                 else:
@@ -206,12 +206,14 @@ class Handler(object):
                 load_two = True
                 load_three = True
                 if msg.buying_price == float(8):
-                    if msg.solar_production > 0.5:
-                        pow_ref = -2.0
+                    if msg.solar_production > float(0):
+                        pow_ref = - msg.solar_production
                     else:
                         pow_ref = 0.0
                 elif msg.selling_price == float(3):
                     pow_ref = 2.0
+                elif msg.solar_production > float(0):
+                    pow_ref = - msg.solar_production + msg.current_load
                 else:
                     pow_ref = 0.0
 
@@ -219,12 +221,14 @@ class Handler(object):
                 load_two = True
                 load_three = False
                 if msg.buying_price == float(8):
-                    if msg.solar_production > 0.5:
-                        pow_ref = -2.0
+                    if msg.solar_production > float(0):
+                        pow_ref = - msg.solar_production
                     else:
                         pow_ref = 0.0
                 elif msg.selling_price == float(3):
                     pow_ref = 2.0
+                elif msg.solar_production > 0.5:
+                    pow_ref = - msg.solar_production + msg.current_load
                 else:
                     pow_ref = 0.0
 
@@ -232,12 +236,14 @@ class Handler(object):
                 load_two = False
                 load_three = False
                 if msg.buying_price == float(8):
-                    if msg.solar_production > 0.5:
-                        pow_ref = -2.0
+                    if msg.solar_production > float(0):
+                        pow_ref = - msg.solar_production
                     else:
                         pow_ref = 0.0
                 elif msg.selling_price == float(3):
                     pow_ref = 2.0
+                elif msg.solar_production > float(0):
+                    pow_ref = - msg.solar_production + msg.current_load
                 else:
                     pow_ref = 0.0
 
