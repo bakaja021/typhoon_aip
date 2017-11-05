@@ -161,10 +161,10 @@ class Handler(object):
             elif msg.bessOverload and disabled == 'third':
                 self.state_machine.secthr()
 
-            elif not msg.bessOverload and msg.bessPower > float(0) and disabled == 'secthr':
+            elif not msg.bessOverload and msg.current_load < float(6) and disabled == 'secthr':
                 self.state_machine.third()
 
-            elif not msg.bessOverload and msg.bessPower > float(0) and disabled == 'third':
+            elif not msg.bessOverload and msg.current_load < float(6) and disabled == 'third':
                 self.state_machine.none()
 
         # For different states send different controls
