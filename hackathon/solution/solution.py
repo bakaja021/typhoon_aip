@@ -11,9 +11,6 @@ handler = Handler()
 
 def worker(msg: DataMessage) -> ResultsMessage:
     """TODO: This function should be implemented by contestants."""
-    # Details about DataMessage and ResultsMessage objects can be found in /utils/utils.py
-
-    # Dummy result is returned in every cycle here
     res = handler.process(msg)
     return res
 

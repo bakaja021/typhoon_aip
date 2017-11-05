@@ -12,47 +12,47 @@ class StateMachine(object):
 
     transitions = [
         # on_good_full
-        {'trigger': 'off',   'source': 'on_good_full',  'dest': 'off_good_full'},
-        {'trigger': 'bad',   'source': 'on_good_full',  'dest': 'on_bad_full'},
-        {'trigger': 'half',  'source': 'on_good_full',  'dest': 'on_good_half'},
+        {'trigger': 'off',   'source': 'on_good_full',   'dest': 'off_good_full'},
+        {'trigger': 'bad',   'source': 'on_good_full',   'dest': 'on_bad_full'},
+        {'trigger': 'half',  'source': 'on_good_full',   'dest': 'on_good_half'},
 
         # on_good_half
-        {'trigger': 'full',  'source': 'on_good_half',  'dest': 'on_good_full'},
-        {'trigger': 'empty', 'source': 'on_good_half',  'dest': 'on_good_empty'},
-        {'trigger': 'bad',   'source': 'on_good_half',  'dest': 'on_bad_half'},
-        {'trigger': 'off',   'source': 'on_good_half',  'dest': 'off_good_half'},
+        {'trigger': 'full',  'source': 'on_good_half',   'dest': 'on_good_full'},
+        {'trigger': 'empty', 'source': 'on_good_half',   'dest': 'on_good_empty'},
+        {'trigger': 'bad',   'source': 'on_good_half',   'dest': 'on_bad_half'},
+        {'trigger': 'off',   'source': 'on_good_half',   'dest': 'off_good_half'},
 
         # on_good_empty
-        {'trigger': 'half',  'source': 'on_good_empty', 'dest': 'on_good_half'},
-        {'trigger': 'bad',   'source': 'on_good_empty', 'dest': 'on_bad_empty'},
-        {'trigger': 'off',   'source': 'on_good_empty', 'dest': 'off_good_empty'},
+        {'trigger': 'half',  'source': 'on_good_empty',  'dest': 'on_good_half'},
+        {'trigger': 'bad',   'source': 'on_good_empty',  'dest': 'on_bad_empty'},
+        {'trigger': 'off',   'source': 'on_good_empty',  'dest': 'off_good_empty'},
 
         # on_bad_full
-        {'trigger': 'good',  'source': 'on_bad_full',   'dest': 'on_good_full'},
-        {'trigger': 'half',  'source': 'on_bad_full',   'dest': 'on_bad_half'},
-        {'trigger': 'off',   'source': 'on_bad_full',   'dest': 'off_bad_full'},
+        {'trigger': 'good',  'source': 'on_bad_full',    'dest': 'on_good_full'},
+        {'trigger': 'half',  'source': 'on_bad_full',    'dest': 'on_bad_half'},
+        {'trigger': 'off',   'source': 'on_bad_full',    'dest': 'off_bad_full'},
 
         # on_bad_half
-        {'trigger': 'full',  'source': 'on_bad_half',   'dest': 'on_bad_full'},
-        {'trigger': 'good',  'source': 'on_bad_half',   'dest': 'on_good_half'},
-        {'trigger': 'empty', 'source': 'on_bad_half',   'dest': 'on_bad_empty'},
-        {'trigger': 'off',   'source': 'on_bad_half',   'dest': 'off_bad_half'},
+        {'trigger': 'full',  'source': 'on_bad_half',    'dest': 'on_bad_full'},
+        {'trigger': 'good',  'source': 'on_bad_half',    'dest': 'on_good_half'},
+        {'trigger': 'empty', 'source': 'on_bad_half',    'dest': 'on_bad_empty'},
+        {'trigger': 'off',   'source': 'on_bad_half',    'dest': 'off_bad_half'},
 
         # on_bad_empty
-        {'trigger': 'good',  'source': 'on_bad_empty',  'dest': 'on_good_empty'},
-        {'trigger': 'half',  'source': 'on_bad_empty',  'dest': 'on_bad_half'},
-        {'trigger': 'off',   'source': 'on_bad_empty',  'dest': 'off_bad_empty'},
+        {'trigger': 'good',  'source': 'on_bad_empty',   'dest': 'on_good_empty'},
+        {'trigger': 'half',  'source': 'on_bad_empty',   'dest': 'on_bad_half'},
+        {'trigger': 'off',   'source': 'on_bad_empty',   'dest': 'off_bad_empty'},
 
         # off_good_full
-        {'trigger': 'half',  'source': 'off_good_full', 'dest': 'off_good_half'},
-        {'trigger': 'on',    'source': 'off_good_full', 'dest': 'on_good_full'},
-        {'trigger': 'bad',   'source': 'off_good_full', 'dest': 'off_bad_full'},
+        {'trigger': 'half',  'source': 'off_good_full',  'dest': 'off_good_half'},
+        {'trigger': 'on',    'source': 'off_good_full',  'dest': 'on_good_full'},
+        {'trigger': 'bad',   'source': 'off_good_full',  'dest': 'off_bad_full'},
 
         # off_good_half
-        {'trigger': 'full',  'source': 'off_good_half', 'dest': 'off_good_full'},
-        {'trigger': 'empty', 'source': 'off_good_half', 'dest': 'off_good_empty'},
-        {'trigger': 'on',    'source': 'off_good_half', 'dest': 'on_good_half'},
-        {'trigger': 'bad',   'source': 'off_good_half', 'dest': 'off_bad_half'},
+        {'trigger': 'full',  'source': 'off_good_half',  'dest': 'off_good_full'},
+        {'trigger': 'empty', 'source': 'off_good_half',  'dest': 'off_good_empty'},
+        {'trigger': 'on',    'source': 'off_good_half',  'dest': 'on_good_half'},
+        {'trigger': 'bad',   'source': 'off_good_half',  'dest': 'off_bad_half'},
 
         # off_good_empty
         {'trigger': 'half',  'source': 'off_good_empty', 'dest': 'off_half_empty'},
@@ -60,25 +60,25 @@ class StateMachine(object):
         {'trigger': 'bad',   'source': 'off_good_empty', 'dest': 'off_bad_empty'},
 
         # off_bad_full
-        {'trigger': 'half',  'source': 'off_bad_full', 'dest': 'off_bad_half'},
-        {'trigger': 'on',    'source': 'off_bad_full', 'dest': 'on_bad_full'},
-        {'trigger': 'good',  'source': 'off_bad_full', 'dest': 'off_good_full'},
+        {'trigger': 'half',  'source': 'off_bad_full',   'dest': 'off_bad_half'},
+        {'trigger': 'on',    'source': 'off_bad_full',   'dest': 'on_bad_full'},
+        {'trigger': 'good',  'source': 'off_bad_full',   'dest': 'off_good_full'},
 
         # off_bad_half
-        {'trigger': 'full',  'source': 'off_bad_half', 'dest': 'off_bad_full'},
-        {'trigger': 'empty', 'source': 'off_bad_half', 'dest': 'off_bad_empty'},
-        {'trigger': 'on',    'source': 'off_bad_half', 'dest': 'on_bad_half'},
-        {'trigger': 'good',  'source': 'off_bad_half', 'dest': 'off_good_half'},
+        {'trigger': 'full',  'source': 'off_bad_half',   'dest': 'off_bad_full'},
+        {'trigger': 'empty', 'source': 'off_bad_half',   'dest': 'off_bad_empty'},
+        {'trigger': 'on',    'source': 'off_bad_half',   'dest': 'on_bad_half'},
+        {'trigger': 'good',  'source': 'off_bad_half',   'dest': 'off_good_half'},
 
         # off_bad_empty
-        {'trigger': 'half',  'source': 'off_bad_empty', 'dest': 'off_bad_half'},
-        {'trigger': 'on',    'source': 'off_bad_empty', 'dest': 'on_bad_empty'},
-        {'trigger': 'good',  'source': 'off_bad_empty', 'dest': 'off_good_empty'},
+        {'trigger': 'half',  'source': 'off_bad_empty',  'dest': 'off_bad_half'},
+        {'trigger': 'on',    'source': 'off_bad_empty',  'dest': 'on_bad_empty'},
+        {'trigger': 'good',  'source': 'off_bad_empty',  'dest': 'off_good_empty'},
     ]
 
     def __init__(self):
         self.machine = Machine(self, states=StateMachine.states,
-                               transitions=StateMachine.transitions, initial='on_bad_half')
+                               transitions=StateMachine.transitions, initial='off_bad_half')
 
 
 class Handler(object):
@@ -106,7 +106,7 @@ class Handler(object):
         # Ask if fullness changed
         if msg.bessSOC > 0.9:
             curr_battery = 'full'
-        elif 0.25 <= msg.bessSOC <= 0.9:
+        elif 0.1 <= msg.bessSOC <= 0.9:
             curr_battery = 'half'
         else:
             curr_battery = 'empty'
@@ -120,34 +120,37 @@ class Handler(object):
                 else:
                     self.state_machine.empty()
 
-
         # For different states send different controls
-        if self.state_machine.state == 'on_good_full':
-            pow_ref = 6.0
-        elif self.state_machine.state == 'on_good_half':
-            pow_ref = 3.0
-        elif self.state_machine.state == 'on_good_empty':
-            pow_ref = 0.0
-        elif self.state_machine.state == 'on_bad_full':
-            pow_ref = 0.0
-        elif self.state_machine.state == 'on_bad_half':
-            pow_ref = 0.0
-        elif self.state_machine.state == 'on_bad_empty':
-            pow_ref = -3.0
-        elif self.state_machine.state == 'off_good_full':
-            pow_ref = 3.0
-        elif self.state_machine.state == 'off_good_half':
-            pow_ref = 0.0
-        elif self.state_machine.state == 'off_good_empty':
-            pow_ref = 0.0
-        elif self.state_machine.state == 'off_bad_full':
-            pow_ref = 0.0
-        elif self.state_machine.state == 'off_bad_half':
-            pow_ref = 0.0
-        else: #'off_bad_empty'
-            pow_ref = 0.0
+        if self.state_machine.state.startswith('on'):
+            if self.state_machine.state == 'on_good_full':
+                pow_ref = 6.0
+            elif self.state_machine.state == 'on_good_half':
+                pow_ref = 3.0
+            elif self.state_machine.state == 'on_good_empty':
+                pow_ref = 0.0
+            elif self.state_machine.state == 'on_bad_full':
+                pow_ref = 0.0
+            elif self.state_machine.state == 'on_bad_half':
+                pow_ref = 0.0
+            elif self.state_machine.state == 'on_bad_empty':
+                pow_ref = -3.0
 
-        pow_ref = 0.0
+        elif self.state_machine.state.startswith('off'):
+            if self.state_machine.state == 'off_good_full':
+                pow_ref = 3.0
+            elif self.state_machine.state == 'off_good_half':
+                pow_ref = 0.0
+            elif self.state_machine.state == 'off_good_empty':
+                pow_ref = 0.0
+            elif self.state_machine.state == 'off_bad_full':
+                pow_ref = 0.0
+            elif self.state_machine.state == 'off_bad_half':
+                pow_ref = 0.0
+            else:  # 'off_bad_empty'
+                pow_ref = 0.0
+        else:
+            pass
+
         # Prepare response
         res = ResultsMessage(data_msg=msg,
                              load_one=True,
