@@ -4,12 +4,13 @@ from hackathon.utils.utils import ResultsMessage, PVMode
 
 class StateMachine(object):
     states = [
-        'on_empty_none', 'on_empty_third', 'on_empty_secthr',
-        'on_half_none', 'on_half_third', 'on_half_secthr',
-        'on_full_none', 'on_full_third', 'on_full_secthr',
+        'on_empty_none',  'on_empty_third', 'on_empty_secthr',
+        'on_half_none',   'on_half_third',  'on_half_secthr',
+        'on_full_none',   'on_full_third', 'on_full_secthr',
+
         'off_empty_none', 'off_empty_third', 'off_empty_secthr',
-        'off_half_none', 'off_half_third', 'off_half_secthr',
-        'off_full_none', 'off_full_third', 'off_full_secthr'
+        'off_half_none',  'off_half_third', 'off_half_secthr',
+        'off_full_none',  'off_full_third', 'off_full_secthr'
     ]
 
     transitions = [
@@ -106,6 +107,9 @@ class StateMachine(object):
 
 class Handler(object):
     state_machine = StateMachine()
+    third_cons = 0
+    sec_cons = 0
+    total_cons = 0
 
     def process(self, msg):
         state, battery, disabled = self.state_machine.state.split('_')
@@ -136,8 +140,6 @@ class Handler(object):
                     self.state_machine.empty()
 
         # Ask if some devices should be powered on or off
-
-        '''
         if state == 'on':
             if disabled == 'secthr':
                 self.state_machine.third()
@@ -147,77 +149,143 @@ class Handler(object):
         else:
             if msg.bessOverload and disabled == 'none':
                 self.state_machine.third()
+
             elif msg.bessOverload and disabled == 'third':
                 self.state_machine.secthr()
+
             elif not msg.bessOverload and msg.bessPower > float(0) and disabled == 'secthr':
                 self.state_machine.third()
+
             elif not msg.bessOverload and msg.bessPower > float(0) and disabled == 'third':
                 self.state_machine.none()
-        '''
+
         # For different states send different controls
         if self.state_machine.state.startswith('on'):
             if self.state_machine.state == 'on_empty_none':
                 load_two = True
                 load_three = True
-                pow_ref = -6.0
+                if msg.buying_price == float(8):
+                    if msg.solar_production > float(0.5):
+                        pow_ref = 0.0
+                    else:
+                        pow_ref = -3.0
+                else:
+                    pow_ref = -6.0
+
             elif self.state_machine.state == 'on_empty_third':
                 load_two = True
                 load_three = False
-                pow_ref = -6.0
+                if msg.buying_price == float(8):
+                    if msg.solar_production > float(0.5):
+                        pow_ref = 0.0
+                    else:
+                        pow_ref = -3.0
+                else:
+                    pow_ref = -6.0
+
             elif self.state_machine.state == 'on_empty_secthr':
                 load_two = False
                 load_three = False
-                pow_ref = -6.0
+                if msg.buying_price == float(8):
+                    if msg.solar_production > float(0.5):
+                        pow_ref = 0.0
+                    else:
+                        pow_ref = -3.0
+                else:
+                    pow_ref = -6.0
+
             elif self.state_machine.state == 'on_half_none':
                 load_two = True
                 load_three = True
-                pow_ref = -3.0
+                if msg.buying_price == float(8):
+                    if msg.solar_production > 0.5:
+                        pow_ref = 0.0
+                    else:
+                        pow_ref = -2.0
+                elif msg.selling_price == float(3):
+                    pow_ref = 2.0
+                else:
+                    pow_ref = 0.0
+
             elif self.state_machine.state == 'on_half_third':
                 load_two = True
                 load_three = False
-                pow_ref = -3.0
+                if msg.buying_price == float(8):
+                    if msg.solar_production > 0.5:
+                        pow_ref = 0.0
+                    else:
+                        pow_ref = -2.0
+                elif msg.selling_price == float(3):
+                    pow_ref = 2.0
+                else:
+                    pow_ref = 0.0
+
             elif self.state_machine.state == 'on_half_secthr':
                 load_two = False
                 load_three = False
-                pow_ref = -3.0
+                if msg.buying_price == float(8):
+                    if msg.solar_production > 0.5:
+                        pow_ref = 0.0
+                    else:
+                        pow_ref = -2.0
+                elif msg.selling_price == float(3):
+                    pow_ref = 2.0
+                else:
+                    pow_ref = 0.0
+
             elif self.state_machine.state == 'on_full_none':
                 load_two = True
                 load_three = True
                 pow_ref = 0.0
+
             elif self.state_machine.state == 'on_full_third':
                 load_two = True
                 load_three = False
-                pow_ref = 0.0
+                if msg.buying_price == float(8):
+                    pow_ref = 2.0
+                else:
+                    pow_ref = 0.0
+
             elif self.state_machine.state == 'on_full_secthr':
                 load_two = False
                 load_three = False
-                pow_ref = 0.0
+                if msg.buying_price == float(8):
+                    pow_ref = 2.0
+                else:
+                    pow_ref = 0.0
         else:
             pow_ref = 0.0
             if self.state_machine.state == 'off_empty_none':
                 load_two = True
                 load_three = True
+
             elif self.state_machine.state == 'off_empty_third':
                 load_two = True
                 load_three = False
+
             elif self.state_machine.state == 'off_empty_secthr':
                 load_two = False
                 load_three = False
+
             elif self.state_machine.state == 'off_half_none':
                 load_two = True
                 load_three = True
             elif self.state_machine.state == 'off_half_third':
                 load_two = True
                 load_three = False
+
             elif self.state_machine.state == 'off_half_secthr':
                 load_two = False
                 load_three = False
+
             elif self.state_machine.state == 'off_full_none':
                 load_two = True
                 load_three = True
+
             elif self.state_machine.state == 'off_full_third':
                 load_two = True
                 load_three = False
+
             elif self.state_machine.state == 'off_full_secthr':
                 load_two = False
                 load_three = False
@@ -233,5 +301,7 @@ class Handler(object):
 
         print('BamBam: {}'.format(res))
         print(self.state_machine.state)
+        print(self.third_cons)
+        print(self.sec_cons)
         print("=" * 50)
         return res
