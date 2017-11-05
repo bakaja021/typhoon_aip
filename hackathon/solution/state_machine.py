@@ -85,7 +85,7 @@ class StateMachine(object):
         {'trigger': 'empty', 'source': 'off_half_secthr', 'dest': 'off_empty_secthr'},
         {'trigger': 'third', 'source': 'off_half_secthr', 'dest': 'off_half_third'},
         # off_full_none
-        {'trigger': 'on', 'source': 'off_full_none', 'dest': 'off_full_none'},
+        {'trigger': 'on', 'source': 'off_full_none', 'dest': 'on_full_none'},
         {'trigger': 'half', 'source': 'off_full_none', 'dest': 'off_half_none'},
         {'trigger': 'third', 'source': 'off_full_none', 'dest': 'off_full_third'},
         # off_full_third
@@ -135,43 +135,99 @@ class Handler(object):
                 else:
                     self.state_machine.empty()
 
+        # Ask if some devices should be powered on or off
+
+        '''
+        if state == 'on':
+            if disabled == 'secthr':
+                self.state_machine.third()
+            elif disabled == 'third':
+                self.state_machine.none()
+
+        else:
+            if msg.bessOverload and disabled == 'none':
+                self.state_machine.third()
+            elif msg.bessOverload and disabled == 'third':
+                self.state_machine.secthr()
+            elif not msg.bessOverload and msg.bessPower > float(0) and disabled == 'secthr':
+                self.state_machine.third()
+            elif not msg.bessOverload and msg.bessPower > float(0) and disabled == 'third':
+                self.state_machine.none()
+        '''
         # For different states send different controls
         if self.state_machine.state.startswith('on'):
-            if self.state_machine.state == 'on_good_full':
-                pow_ref = 6.0
-            elif self.state_machine.state == 'on_good_half':
-                pow_ref = 3.0
-            elif self.state_machine.state == 'on_good_empty':
-                pow_ref = 0.0
-            elif self.state_machine.state == 'on_bad_full':
-                pow_ref = 0.0
-            elif self.state_machine.state == 'on_bad_half':
-                pow_ref = 0.0
-            elif self.state_machine.state == 'on_bad_empty':
+            if self.state_machine.state == 'on_empty_none':
+                load_two = True
+                load_three = True
+                pow_ref = -6.0
+            elif self.state_machine.state == 'on_empty_third':
+                load_two = True
+                load_three = False
+                pow_ref = -6.0
+            elif self.state_machine.state == 'on_empty_secthr':
+                load_two = False
+                load_three = False
+                pow_ref = -6.0
+            elif self.state_machine.state == 'on_half_none':
+                load_two = True
+                load_three = True
                 pow_ref = -3.0
-
-        elif self.state_machine.state.startswith('off'):
-            if self.state_machine.state == 'off_good_full':
-                pow_ref = 3.0
-            elif self.state_machine.state == 'off_good_half':
+            elif self.state_machine.state == 'on_half_third':
+                load_two = True
+                load_three = False
+                pow_ref = -3.0
+            elif self.state_machine.state == 'on_half_secthr':
+                load_two = False
+                load_three = False
+                pow_ref = -3.0
+            elif self.state_machine.state == 'on_full_none':
+                load_two = True
+                load_three = True
                 pow_ref = 0.0
-            elif self.state_machine.state == 'off_good_empty':
+            elif self.state_machine.state == 'on_full_third':
+                load_two = True
+                load_three = False
                 pow_ref = 0.0
-            elif self.state_machine.state == 'off_bad_full':
-                pow_ref = 0.0
-            elif self.state_machine.state == 'off_bad_half':
-                pow_ref = 0.0
-            else:  # 'off_bad_empty'
+            elif self.state_machine.state == 'on_full_secthr':
+                load_two = False
+                load_three = False
                 pow_ref = 0.0
         else:
-            pass
+            pow_ref = 0.0
+            if self.state_machine.state == 'off_empty_none':
+                load_two = True
+                load_three = True
+            elif self.state_machine.state == 'off_empty_third':
+                load_two = True
+                load_three = False
+            elif self.state_machine.state == 'off_empty_secthr':
+                load_two = False
+                load_three = False
+            elif self.state_machine.state == 'off_half_none':
+                load_two = True
+                load_three = True
+            elif self.state_machine.state == 'off_half_third':
+                load_two = True
+                load_three = False
+            elif self.state_machine.state == 'off_half_secthr':
+                load_two = False
+                load_three = False
+            elif self.state_machine.state == 'off_full_none':
+                load_two = True
+                load_three = True
+            elif self.state_machine.state == 'off_full_third':
+                load_two = True
+                load_three = False
+            elif self.state_machine.state == 'off_full_secthr':
+                load_two = False
+                load_three = False
 
 
         # Prepare response
         res = ResultsMessage(data_msg=msg,
                              load_one=True,
-                             load_two=True,
-                             load_three=True,
+                             load_two=load_two,
+                             load_three=load_three,
                              power_reference=pow_ref,
                              pv_mode=PVMode.ON)
 
