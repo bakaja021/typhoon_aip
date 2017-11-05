@@ -268,7 +268,7 @@ class Handler(object):
                 load_three = True
 
             elif self.state_machine.state == 'off_empty_third':
-                load_two = True
+                load_two = False  # <--
                 load_three = False
 
             elif self.state_machine.state == 'off_empty_secthr':
@@ -279,7 +279,7 @@ class Handler(object):
                 load_two = True
                 load_three = True
             elif self.state_machine.state == 'off_half_third':
-                load_two = True
+                load_two = False  # <--
                 load_three = False
 
             elif self.state_machine.state == 'off_half_secthr':
@@ -291,7 +291,7 @@ class Handler(object):
                 load_three = True
 
             elif self.state_machine.state == 'off_full_third':
-                load_two = True
+                load_two = False  # <--
                 load_three = False
 
             elif self.state_machine.state == 'off_full_secthr':
