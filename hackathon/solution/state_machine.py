@@ -123,12 +123,20 @@ class Handler(object):
                 self.state_machine.on()
 
         # Ask if fullness changed
-        if msg.bessSOC > 0.8:
-            curr_battery = 'full'
-        elif 0.2 <= msg.bessSOC <= 0.8:
-            curr_battery = 'half'
+        curr_battery = battery
+
+        if battery == 'full':
+            if msg.bessSOC < 0.6:
+                curr_battery = 'half'
+
+        elif battery == 'half':
+            if msg.bessSOC > 0.95:
+                curr_battery = 'full'
+            elif msg.bessSOC < 0.2:
+                curr_battery = 'empty'
         else:
-            curr_battery = 'empty'
+            if msg.bessSOC > 0.4:
+                curr_battery = 'half'
 
         if curr_battery != battery:
             if battery != 'half':
