@@ -135,14 +135,44 @@ class Handler(object):
                 else:
                     self.state_machine.empty()
 
-        # Ask if some device should be powered on or of
+        # For different states send different controls
+        if self.state_machine.state.startswith('on'):
+            if self.state_machine.state == 'on_good_full':
+                pow_ref = 6.0
+            elif self.state_machine.state == 'on_good_half':
+                pow_ref = 3.0
+            elif self.state_machine.state == 'on_good_empty':
+                pow_ref = 0.0
+            elif self.state_machine.state == 'on_bad_full':
+                pow_ref = 0.0
+            elif self.state_machine.state == 'on_bad_half':
+                pow_ref = 0.0
+            elif self.state_machine.state == 'on_bad_empty':
+                pow_ref = -3.0
+
+        elif self.state_machine.state.startswith('off'):
+            if self.state_machine.state == 'off_good_full':
+                pow_ref = 3.0
+            elif self.state_machine.state == 'off_good_half':
+                pow_ref = 0.0
+            elif self.state_machine.state == 'off_good_empty':
+                pow_ref = 0.0
+            elif self.state_machine.state == 'off_bad_full':
+                pow_ref = 0.0
+            elif self.state_machine.state == 'off_bad_half':
+                pow_ref = 0.0
+            else:  # 'off_bad_empty'
+                pow_ref = 0.0
+        else:
+            pass
+
 
         # Prepare response
         res = ResultsMessage(data_msg=msg,
                              load_one=True,
                              load_two=True,
                              load_three=True,
-                             power_reference=0.0,
+                             power_reference=pow_ref,
                              pv_mode=PVMode.ON)
 
         print('BamBam: {}'.format(res))
