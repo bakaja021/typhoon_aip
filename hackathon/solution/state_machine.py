@@ -113,6 +113,8 @@ class Handler(object):
 
     def process(self, msg):
         state, battery, disabled = self.state_machine.state.split('_')
+        pv_mode = PVMode.ON
+        charge_speed = - 4.0
 
         # Ask if network changed status
         curr_state = 'on' if msg.grid_status else 'off'
@@ -174,40 +176,40 @@ class Handler(object):
                 load_three = True
                 if msg.buying_price == float(8):
                     if msg.solar_production > float(0):
-                        pow_ref = - msg.solar_production
+                        pow_ref = - msg.solar_production + msg.current_load
                     else:
                         pow_ref = 0.0
                 else:
-                    pow_ref = -6.0
+                    pow_ref = charge_speed
 
             elif self.state_machine.state == 'on_empty_third':
                 load_two = True
                 load_three = False
                 if msg.buying_price == float(8):
                     if msg.solar_production > float(0):
-                        pow_ref = - msg.solar_production
+                        pow_ref = - msg.solar_production + msg.current_load
                     else:
                         pow_ref = 0.0
                 else:
-                    pow_ref = -6.0
+                    pow_ref = charge_speed
 
             elif self.state_machine.state == 'on_empty_secthr':
                 load_two = False
                 load_three = False
                 if msg.buying_price == float(8):
                     if msg.solar_production > float(0):
-                        pow_ref = - msg.solar_production
+                        pow_ref = - msg.solar_production + msg.current_load
                     else:
                         pow_ref = 0.0
                 else:
-                    pow_ref = -6.0
+                    pow_ref = charge_speed
 
             elif self.state_machine.state == 'on_half_none':
                 load_two = True
                 load_three = True
                 if msg.buying_price == float(8):
                     if msg.solar_production > float(0):
-                        pow_ref = - msg.solar_production
+                        pow_ref = - msg.solar_production + msg.current_load
                     else:
                         pow_ref = 0.0
                 elif msg.selling_price == float(3):
@@ -222,12 +224,12 @@ class Handler(object):
                 load_three = False
                 if msg.buying_price == float(8):
                     if msg.solar_production > float(0):
-                        pow_ref = - msg.solar_production
+                        pow_ref = - msg.solar_production + msg.current_load
                     else:
                         pow_ref = 0.0
                 elif msg.selling_price == float(3):
                     pow_ref = 2.0
-                elif msg.solar_production > 0.5:
+                elif msg.solar_production > float(0):
                     pow_ref = - msg.solar_production + msg.current_load
                 else:
                     pow_ref = 0.0
@@ -237,7 +239,7 @@ class Handler(object):
                 load_three = False
                 if msg.buying_price == float(8):
                     if msg.solar_production > float(0):
-                        pow_ref = - msg.solar_production
+                        pow_ref = - msg.solar_production + msg.current_load
                     else:
                         pow_ref = 0.0
                 elif msg.selling_price == float(3):
@@ -250,21 +252,24 @@ class Handler(object):
             elif self.state_machine.state == 'on_full_none':
                 load_two = True
                 load_three = True
-                pow_ref = 0.0
+                if msg.bessSOC < float(1) and msg.buying_price < float(8):
+                    pow_ref = - 6.0
+                else:
+                    pow_ref = 0.0
 
             elif self.state_machine.state == 'on_full_third':
                 load_two = True
                 load_three = False
-                if msg.buying_price == float(8):
-                    pow_ref = 2.0
+                if msg.bessSOC < float(1) and msg.buying_price < float(8):
+                    pow_ref = - 6.0
                 else:
                     pow_ref = 0.0
 
             elif self.state_machine.state == 'on_full_secthr':
                 load_two = False
                 load_three = False
-                if msg.buying_price == float(8):
-                    pow_ref = 2.0
+                if msg.bessSOC < float(1) and msg.buying_price < float(8):
+                    pow_ref = - 6.0
                 else:
                     pow_ref = 0.0
         else:
@@ -295,14 +300,17 @@ class Handler(object):
             elif self.state_machine.state == 'off_full_none':
                 load_two = True
                 load_three = True
+                pv_mode = PVMode.OFF
 
             elif self.state_machine.state == 'off_full_third':
                 load_two = False  # <--
                 load_three = False
+                pv_mode = PVMode.OFF
 
             elif self.state_machine.state == 'off_full_secthr':
                 load_two = False
                 load_three = False
+                pv_mode = PVMode.OFF
 
 
         # Prepare response
@@ -311,7 +319,7 @@ class Handler(object):
                              load_two=load_two,
                              load_three=load_three,
                              power_reference=pow_ref,
-                             pv_mode=PVMode.ON)
+                             pv_mode=pv_mode)
 
         print('BamBam: {}'.format(res))
         print(self.state_machine.state)
